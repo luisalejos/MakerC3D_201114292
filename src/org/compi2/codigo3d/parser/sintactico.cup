@@ -42,64 +42,93 @@ start with inicial;
 inicial     ::= {: ControlC3D.reiniciar(); :} expresion:exp 
                     {: 
                         RESULT = exp;
-                        ControlC3D.agregarC3D("//Último valor: " + exp.getCad());
+                        ControlC3D.agregarC3D(exp.getCad());
+                        ControlC3D.agregarC3D(exp.getVerdadera()+":\n");
+                        ControlC3D.agregarC3D(exp.getFalsa()+":\n");
+                        
+                        ControlC3D.agregarC3D("/* Último valor: " + exp.getCad() + "*/");
                     :};
 
 expresion   ::= expresion:izq OR expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " || " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = izq.getVerdadera()+", "+ der.getVerdadera();
+                        String falsa = der.getFalsa();
+                        
+                        String c3d = izq.getCad() + " " + izq.getFalsa() +":\n";
+                        c3d+= der.getCad() + "\n";
+                        
+                        RESULT = new NodoC3D(c3d, verdadera, falsa);
+                       
                     :}
             |   expresion:izq AND expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " && " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = der.getVerdadera();
+                        String falsa =izq.getFalsa()+", "+ der.getFalsa();
+                        
+                        String c3d = izq.getCad() + " " + izq.getVerdadera() +":\n";
+                        c3d+= der.getCad() + "\n";
+                        
+                        RESULT = new NodoC3D(c3d, verdadera, falsa); 
                     :}
             |   expresion:izq IGUAL expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " == " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " == " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa); 
                     :}
             |   expresion:izq DIFERENTE expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " != " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " != " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa);  
                     :}
             |   expresion:izq MAYOR expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " > " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " > " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa); 
                     :}
             |   expresion:izq MENOR expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " < " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " < " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa); 
                     :}
             |   expresion:izq MAYOR_IGUAL expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " >= " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " >= " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa);  
                     :}
             |   expresion:izq MENOR_IGUAL expresion:der
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = " + izq.getCad() + " <= " + der.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        String verdadera = ControlC3D.generaEtiqueta();
+                        String falsa = ControlC3D.generaEtiqueta();
+                        
+                        String c3d = "if " + izq.getCad() + " <= " + der.getCad() + " goto "+ verdadera +"\n";
+                        c3d += "goto "+ falsa +"\n";
+                        //ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(c3d,verdadera, falsa); 
                     :}
             |   expresion:izq MAS expresion:der
                     {: 
@@ -146,10 +175,7 @@ expresion   ::= expresion:izq OR expresion:der
                     :}
             |   NOT expresion:exp 
                     {: 
-                        String temp = ControlC3D.generaTemp();
-                        String c3d = temp + " = ! " + exp.getCad() + ";\n";
-                        ControlC3D.agregarC3D(c3d);
-                        RESULT = new NodoC3D(temp); 
+                        RESULT = new NodoC3D(exp.getCad(), exp.getFalsa(), exp.getVerdadera()); 
                     :}
             |   PAR_IZQ expresion:exp PAR_DER   
                     {: RESULT = exp; :}
